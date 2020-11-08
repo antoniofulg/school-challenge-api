@@ -17,7 +17,9 @@ export default {
 
     const filters: Filter = {}
 
-    filters.name = Like(`%${name}%`)
+    if (name) {
+      filters.name = Like(`%${name}%`)
+    }
     if (degreeId) {
       filters.degreeId = degreeId as string
     }
