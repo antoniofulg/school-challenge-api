@@ -1,4 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm'
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm'
+import Student from './Student'
 
 @Entity('classes')
 export default class Class {
@@ -7,4 +14,7 @@ export default class Class {
 
   @Column()
   name: string
+
+  @OneToMany(() => Student, (student) => student.class)
+  students: Student[]
 }
