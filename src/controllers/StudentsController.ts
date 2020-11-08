@@ -20,6 +20,7 @@ export default {
 
   async show(request: Request, response: Response) {
     const { id } = request.params
+    const { simplified } = request.query
 
     const studentsRepository = getRepository(Student)
 
@@ -29,7 +30,7 @@ export default {
 
     return response.status(200).json({
       message: 'Aluno encontrado!',
-      student: studentsView.render(student),
+      student: studentsView.render(student, simplified === 'true'),
     })
   },
 
