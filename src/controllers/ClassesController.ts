@@ -20,7 +20,7 @@ export default {
     } catch (error) {
       console.log(error)
       return response.status(400).json({
-        message: error,
+        message: 'Não foi possível buscar as turmas!',
       })
     }
   },
