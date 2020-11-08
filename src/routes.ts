@@ -44,6 +44,7 @@ routes.post(
 routes.get('/students', StudentsController.index)
 routes.get('/students/:id', StudentsController.show)
 routes.post('/students', StudentsController.create)
+routes.put('/students/:id', StudentsController.update)
 
 /** teachers */
 routes.get('/teachers', TeachersController.index)
