@@ -19,6 +19,12 @@ export default class Student {
   @Column()
   name: string
 
+  @Column()
+  degreeId: number
+
+  @Column()
+  classId: number
+
   @ManyToOne(() => Degree, (degree) => degree)
   @JoinColumn({ name: 'degreeId' })
   degree: Degree

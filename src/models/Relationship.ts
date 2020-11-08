@@ -13,6 +13,12 @@ export default class Relationship {
   @PrimaryGeneratedColumn('increment')
   id: number
 
+  @Column()
+  teacherId: number
+
+  @Column()
+  matterId: number
+
   @ManyToOne(() => Teacher, (teacher) => teacher)
   @JoinColumn({ name: 'teacherId' })
   teacher: Teacher

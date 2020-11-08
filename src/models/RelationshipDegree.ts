@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, JoinColumn, ManyToOne } from 'typeorm'
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  JoinColumn,
+  ManyToOne,
+} from 'typeorm'
 import Degree from './Degree'
 import Relationship from './Relationship'
 
@@ -6,6 +12,12 @@ import Relationship from './Relationship'
 export default class RelationshipDegree {
   @PrimaryGeneratedColumn('increment')
   id: number
+
+  @Column()
+  relationshipId: number
+
+  @Column()
+  degreeId: number
 
   @ManyToOne(() => Relationship, (relationship) => relationship)
   @JoinColumn({ name: 'relationshipId' })
