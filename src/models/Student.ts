@@ -25,11 +25,9 @@ export default class Student {
   @Column()
   classId: number
 
-  @ManyToOne(() => Degree, (degree) => degree)
-  @JoinColumn({ name: 'degreeId' })
+  @ManyToOne(() => Degree)
   degree: Degree
 
-  @ManyToOne(() => Class, (classEntity) => classEntity)
-  @JoinColumn({ name: 'classId' })
+  @ManyToOne(() => Class)
   class: Class
 }
