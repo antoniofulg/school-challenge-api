@@ -1,15 +1,36 @@
 import { Request, Response } from 'express'
-import { getRepository } from 'typeorm'
+import { FindOperator, getRepository, Like } from 'typeorm'
 
 import studentsView from '../views/students_view'
 import Student from '../models/Student'
 
+interface Filter {
+  name?: FindOperator<String>
+  degreeId?: string
+  classId?: string
+}
+
 export default {
   async index(request: Request, response: Response) {
     const studentsRepository = getRepository(Student)
+    const { name, degreeId, classId } = request.query
+
+    const filters: Filter = {}
+
+    filters.name = Like(`%${name}%`)
+    if (degreeId) {
+      filters.degreeId = degreeId as string
+    }
+    if (classId) {
+      filters.classId = classId as string
+    }
 
     const students = await studentsRepository.find({
       relations: ['degree', 'class'],
+      order: {
+        id: 'DESC',
+      },
+      where: [filters],
     })
 
     return response.status(200).json({
