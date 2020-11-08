@@ -8,6 +8,14 @@ export class createRelationshipDegreeClasses1604810423221
         name: 'relationship_degree_classes',
         columns: [
           {
+            name: 'id',
+            type: 'integer',
+            unsigned: true,
+            isPrimary: true,
+            isGenerated: true,
+            generationStrategy: 'increment',
+          },
+          {
             name: 'relationshipDegreeId',
             type: 'integer',
             unsigned: true,

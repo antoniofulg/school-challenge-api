@@ -1,10 +1,4 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  JoinColumn,
-  ManyToOne,
-} from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, JoinColumn, ManyToOne } from 'typeorm'
 import Degree from './Degree'
 import Relationship from './Relationship'
 
