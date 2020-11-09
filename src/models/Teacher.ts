@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from 'typeorm'
+import Profile from './Profile'
 
 @Entity('teachers')
 export default class Teacher {
@@ -7,4 +8,7 @@ export default class Teacher {
 
   @Column()
   name: string
+
+  @OneToOne(() => Profile, (profile) => profile.teacher)
+  profile: Profile
 }
