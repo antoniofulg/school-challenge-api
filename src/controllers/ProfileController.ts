@@ -49,7 +49,7 @@ export default {
 
     return response
       .status(200)
-      .json({ profile: profileView.renderMany(profiles) })
+      .json({ profiles: profileView.renderMany(profiles) })
   },
 
   async create(request: Request, response: Response) {
