@@ -5,6 +5,7 @@ export default {
     return {
       id: teacher.id,
       name: teacher.name,
+      profile: teacher.profile,
     }
   },
   renderMany(teachers: Teacher[]) {
