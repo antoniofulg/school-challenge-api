@@ -1,14 +1,35 @@
 import { Request, Response } from 'express'
-import { getRepository } from 'typeorm'
+import { FindOperator, getRepository, Like } from 'typeorm'
+
+import teacherView from '../views/teachers_view'
 import Teacher from '../models/Teacher'
+
+interface Filter {
+  name?: FindOperator<String>
+}
 
 export default {
   async index(request: Request, response: Response) {
     const teachersRepository = getRepository(Teacher)
+    const { name, degreeId, classId } = request.query
 
-    const teachers = await teachersRepository.find()
+    const filters: Filter = {}
 
-    return response.status(200).json(teachers)
+    const teachers = await teachersRepository
+      .createQueryBuilder('teacher')
+      .leftJoinAndSelect('teacher.profile', 'profile')
+      .leftJoinAndSelect('profile.matter', 'matter')
+      .leftJoinAndSelect('profile.degrees', 'profile_degrees')
+      .leftJoinAndSelect('profile_degrees.degree', 'degree')
+      .leftJoinAndSelect('profile_degrees.classes', 'class')
+      .where('teacher.id like :name', { name: '%2%' })
+      .andWhere('degree.id = 1')
+      .andWhere('class.id = 3')
+      .getMany()
+
+    return response.status(200).json({
+      teachers: teacherView.renderMany(teachers),
+    })
   },
 
   async show(request: Request, response: Response) {
