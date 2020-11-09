@@ -8,13 +8,13 @@ export class createProfileDegreeClasses1604885235925
         name: 'profile_degree_classes',
         columns: [
           {
-            name: 'profileDegreeId',
+            name: 'profileDegreesId',
             type: 'integer',
             unsigned: true,
             isPrimary: true,
           },
           {
-            name: 'classId',
+            name: 'classesId',
             type: 'integer',
             unsigned: true,
             isPrimary: true,
@@ -23,7 +23,7 @@ export class createProfileDegreeClasses1604885235925
         foreignKeys: [
           {
             name: 'ProfileDegreeClassProfileDegree',
-            columnNames: ['profileDegreeId'],
+            columnNames: ['profileDegreesId'],
             referencedTableName: 'profile_degrees',
             referencedColumnNames: ['id'],
             onUpdate: 'CASCADE',
@@ -31,7 +31,7 @@ export class createProfileDegreeClasses1604885235925
           },
           {
             name: 'ProfileDegreeClassClasses',
-            columnNames: ['classId'],
+            columnNames: ['classesId'],
             referencedTableName: 'classes',
             referencedColumnNames: ['id'],
             onUpdate: 'CASCADE',

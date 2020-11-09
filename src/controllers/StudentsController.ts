@@ -97,7 +97,9 @@ export default {
         student: studentsView.render(student),
       })
     } catch (error) {
-      return response.status(404).json({ message: 'Aluno não encontrado!' })
+      return response
+        .status(404)
+        .json({ message: 'Não foi possível editar o aluno!' })
     }
   },
 }

@@ -24,6 +24,8 @@ export default class ProfileDegreeClass {
   degree: Degree
 
   @ManyToMany(() => Class)
-  @JoinTable()
+  @JoinTable({
+    name: 'profile_degree_classes',
+  })
   classes: Class[]
 }

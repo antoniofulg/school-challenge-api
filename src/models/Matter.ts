@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm'
+import Profile from './Profile'
 
 @Entity('matters')
 export default class Matter {
@@ -7,4 +8,7 @@ export default class Matter {
 
   @Column()
   name: string
+
+  @OneToMany(() => Profile, (profile) => profile.matter)
+  profiles: Profile[]
 }
