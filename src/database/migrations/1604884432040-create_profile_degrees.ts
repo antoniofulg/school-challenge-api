@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm'
 
-export class createRelationships1604809638408 implements MigrationInterface {
+export class createProfileDegrees1604884432040 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'relationships',
+        name: 'profile_degrees',
         columns: [
           {
             name: 'id',
@@ -15,29 +15,29 @@ export class createRelationships1604809638408 implements MigrationInterface {
             generationStrategy: 'increment',
           },
           {
-            name: 'teacherId',
+            name: 'profileId',
             type: 'integer',
             unsigned: true,
           },
           {
-            name: 'matterId',
+            name: 'degreeId',
             type: 'integer',
             unsigned: true,
           },
         ],
         foreignKeys: [
           {
-            name: 'RelationshipTeacher',
-            columnNames: ['teacherId'],
-            referencedTableName: 'teachers',
+            name: 'ProfileDegreesProfile',
+            columnNames: ['profileId'],
+            referencedTableName: 'profiles',
             referencedColumnNames: ['id'],
             onUpdate: 'CASCADE',
             onDelete: 'CASCADE',
           },
           {
-            name: 'RelationshipMatter',
-            columnNames: ['matterId'],
-            referencedTableName: 'matters',
+            name: 'ProfilesDegreesDegree',
+            columnNames: ['degreeId'],
+            referencedTableName: 'degrees',
             referencedColumnNames: ['id'],
             onUpdate: 'CASCADE',
             onDelete: 'CASCADE',
@@ -48,6 +48,6 @@ export class createRelationships1604809638408 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('relationships')
+    await queryRunner.dropTable('profile_degrees')
   }
 }

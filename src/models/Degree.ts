@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm'
+import ProfileDegree from './ProfileDegree'
 
 @Entity('degrees')
 export default class Degree {
@@ -7,4 +8,7 @@ export default class Degree {
 
   @Column()
   name: string
+
+  @OneToMany(() => ProfileDegree, (profileDegree) => profileDegree.degree)
+  profiles: ProfileDegree
 }

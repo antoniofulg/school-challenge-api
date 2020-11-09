@@ -2,9 +2,7 @@ import { Router } from 'express'
 import ClassesController from './controllers/ClassesController'
 import DegreesController from './controllers/DegreesController'
 import MattersController from './controllers/MattersController'
-import RelationshipsController from './controllers/RelationshipsController'
-import RelationshipDegreesController from './controllers/RelationshipDegreesController'
-import RelationshipDegreeClassesController from './controllers/RelationshipDegreeClassesController'
+import ProfileController from './controllers/ProfileController'
 import StudentsController from './controllers/StudentsController'
 import TeachersController from './controllers/TeachersController'
 
@@ -22,23 +20,9 @@ routes.post('/degrees', DegreesController.create)
 routes.get('/matters', MattersController.index)
 routes.post('/matters', MattersController.create)
 
-/** relationship */
-routes.get('/relationships', RelationshipsController.index)
-routes.post('/relationships', RelationshipsController.create)
-
-/** relationships */
-routes.get('/relationship-degrees', RelationshipDegreesController.index)
-routes.post('/relationship-degrees', RelationshipDegreesController.create)
-
-/** relationships */
-routes.get(
-  '/relationship-degree-classes',
-  RelationshipDegreeClassesController.index
-)
-routes.post(
-  '/relationship-degree-classes',
-  RelationshipDegreeClassesController.create
-)
+/** profile */
+routes.get('/profiles', ProfileController.index)
+routes.post('/profiles', ProfileController.create)
 
 /** students */
 routes.get('/students', StudentsController.index)
