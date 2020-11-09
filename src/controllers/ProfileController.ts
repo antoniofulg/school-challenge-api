@@ -35,7 +35,13 @@ export default {
     const profileRepository = getRepository(Profile)
 
     const profiles = await profileRepository.find({
-      relations: ['matter', 'teacher', 'degrees'],
+      relations: [
+        'matter',
+        'teacher',
+        'degrees',
+        'degrees.degree',
+        'degrees.classes',
+      ],
       order: {
         id: 'DESC',
       },
