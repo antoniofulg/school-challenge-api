@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm'
 import ProfileDegree from './ProfileDegree'
+import Student from './Student'
 
 @Entity('degrees')
 export default class Degree {
@@ -10,5 +11,8 @@ export default class Degree {
   name: string
 
   @OneToMany(() => ProfileDegree, (profileDegree) => profileDegree.degree)
-  profiles: ProfileDegree
+  profiles: ProfileDegree[]
+
+  @OneToMany(() => Student, (student) => student.degree)
+  students: Student[]
 }

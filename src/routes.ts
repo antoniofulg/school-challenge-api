@@ -14,6 +14,7 @@ routes.post('/classes', ClassesController.create)
 
 /** degrees */
 routes.get('/degrees', DegreesController.index)
+routes.get('/degrees/students', DegreesController.students)
 routes.post('/degrees', DegreesController.create)
 
 /** matters */
