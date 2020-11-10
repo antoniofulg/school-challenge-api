@@ -36,7 +36,6 @@ export default {
     })
 
     return response.status(200).json({
-      message: 'Alunos encontrados',
       students: studentsView.renderMany(students),
     })
   },
@@ -52,7 +51,6 @@ export default {
     })
 
     return response.status(200).json({
-      message: 'Aluno encontrado!',
       student: studentsView.render(student, simplified === 'true'),
     })
   },

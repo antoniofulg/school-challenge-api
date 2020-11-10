@@ -85,7 +85,7 @@ export default {
 
     const teacher = await teachersRepository.findOneOrFail(id)
 
-    return response.status(200).json(teacher)
+    return response.status(200).json({ teacher: teacherView.render(teacher) })
   },
 
   async create(request: Request, response: Response) {
@@ -99,6 +99,9 @@ export default {
 
     await teachersRepository.save(teacher)
 
-    return response.status(201).json(teacher)
+    return response.status(201).json({
+      message: 'Professor cadastrado com sucesso!',
+      teacher: teacherView.render(teacher),
+    })
   },
 }
