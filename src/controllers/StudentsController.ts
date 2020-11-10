@@ -1,14 +1,19 @@
 import { Request, Response } from 'express'
 import { FindOperator, getRepository, Like } from 'typeorm'
+import { format } from 'date-fns'
+import faker from 'faker'
 
 import studentsView from '../views/students_view'
 import Student from '../models/Student'
+import students_view from '../views/students_view'
 
 interface Filter {
   name?: FindOperator<String>
   degreeId?: string
   classId?: string
 }
+
+faker.locale = 'pt_BR'
 
 export default {
   async index(request: Request, response: Response) {
@@ -67,11 +72,39 @@ export default {
       classId,
     })
 
-    await studentsRepository.save(student)
+    await studentsRepository.save([student])
 
     return response.status(201).json({
       message: 'Aluno cadastrado com sucesso!',
-      student: studentsView.render(student),
+    })
+  },
+
+  async generate(request: Request, response: Response) {
+    const studentsRepository = getRepository(Student)
+    const students = []
+
+    let i = 1
+    const pad = '0000'
+
+    while (i <= 300) {
+      let raIdentifier = '' + i
+      raIdentifier =
+        pad.substring(0, pad.length - raIdentifier.length) + raIdentifier
+      const ra = parseInt(format(new Date(), `yyMMddkkmmss'${raIdentifier}'`))
+      const name = `${faker.fake('{{name.firstName}}')} ${faker.fake(
+        '{{name.lastName}}'
+      )}`
+      const degreeId = Math.floor(Math.random() * 13 + 1)
+      const classId = Math.floor(Math.random() * 6 + 1)
+      const student = studentsRepository.create({ ra, name, degreeId, classId })
+      students.push(student)
+      i++
+    }
+
+    await studentsRepository.save(students)
+
+    return response.status(201).json({
+      message: 'Alunos gerados com sucesso!',
     })
   },
 

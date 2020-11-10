@@ -29,6 +29,7 @@ routes.post('/profiles', ProfileController.create)
 routes.get('/students', StudentsController.index)
 routes.get('/students/:id', StudentsController.show)
 routes.post('/students', StudentsController.create)
+routes.post('/students/generate/', StudentsController.generate)
 routes.put('/students/:id', StudentsController.update)
 
 /** teachers */
