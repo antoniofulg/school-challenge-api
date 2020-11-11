@@ -8,7 +8,9 @@ export default {
 
     const matters = await mattersRepository.find()
 
-    return response.status(200).json(matters)
+    return response.status(200).json({
+      matters,
+    })
   },
 
   async create(request: Request, response: Response) {
