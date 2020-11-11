@@ -13,7 +13,7 @@ import Degree from './Degree'
 import Profile from './Profile'
 
 @Entity('profile_degrees')
-export default class ProfileDegreeClass {
+export default class ProfileDegree {
   @PrimaryGeneratedColumn('increment')
   id: number
 
