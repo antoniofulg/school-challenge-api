@@ -36,5 +36,6 @@ routes.put('/students/:id', StudentsController.update)
 routes.get('/teachers', TeachersController.index)
 routes.get('/teachers/:id', TeachersController.show)
 routes.post('/teachers', TeachersController.create)
+routes.put('/teachers/:id', TeachersController.update)
 
 export default routes
