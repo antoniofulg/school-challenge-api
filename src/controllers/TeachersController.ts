@@ -3,6 +3,11 @@ import { FindOperator, getRepository, Like } from 'typeorm'
 
 import teacherView from '../views/teachers_view'
 import Teacher from '../models/Teacher'
+import Profile from '../models/Profile'
+import ProfileDegree from '../models/ProfileDegree'
+import Matter from '../models/Matter'
+import Class from '../models/Class'
+import Degree from '../models/Degree'
 
 interface FilterQuery {
   type: string
@@ -52,6 +57,45 @@ const getTeachers = (filters: Array<Filter>) => {
   return query.getMany()
 }
 
+const updateDegreesClassesEntities = async (
+  profileDegreesItems: any,
+  profileDegreeRepository: any
+) => {
+  const classRepository = getRepository(Class)
+  const degreeRepository = getRepository(Degree)
+
+  const profileDegrees = []
+
+  for await (const profileDegreeItem of profileDegreesItems) {
+    let profileDegree = {}
+    profileDegree = await profileDegreeRepository.findOneOrFail(
+      profileDegreeItem.id
+    )
+
+    const degree = await degreeRepository.findOneOrFail(
+      profileDegreeItem.degree.id
+    )
+    const classes = []
+    for await (const classItem of profileDegreeItem.classes) {
+      classes.push(await classRepository.findOneOrFail(classItem.id))
+    }
+    if (profileDegree.id === profileDegreeItem.id) {
+      profileDegree.degree = degree
+      profileDegree.classes = classes
+      profileDegreeRepository.save(profileDegree)
+    } else {
+      profileDegrees.push({
+        degree,
+        classes,
+      })
+    }
+  }
+
+  console.log(profileDegrees)
+
+  return profileDegrees
+}
+
 export default {
   async index(request: Request, response: Response) {
     const { name, degreeId, classId } = request.query
@@ -81,9 +125,15 @@ export default {
   async show(request: Request, response: Response) {
     const { id } = request.params
 
-    const teachersRepository = getRepository(Teacher)
-
-    const teacher = await teachersRepository.findOneOrFail(id)
+    const teacher = await getRepository(Teacher)
+      .createQueryBuilder('teacher')
+      .leftJoinAndSelect('teacher.profile', 'profile')
+      .leftJoinAndSelect('profile.matter', 'matter')
+      .leftJoinAndSelect('profile.degrees', 'profile_degrees')
+      .leftJoinAndSelect('profile_degrees.degree', 'degree')
+      .leftJoinAndSelect('profile_degrees.classes', 'class')
+      .where('teacher.id = :id', { id })
+      .getOneOrFail()
 
     return response.status(200).json({ teacher: teacherView.render(teacher) })
   },
@@ -103,5 +153,59 @@ export default {
       message: 'Professor cadastrado com sucesso!',
       teacher: teacherView.render(teacher),
     })
+  },
+
+  async update(request: Request, response: Response) {
+    try {
+      const { id } = request.params
+      const newTeacher = request.body
+
+      console.log(newTeacher)
+      console.log(newTeacher.profile.degrees)
+      console.log(newTeacher.profile.degrees[0].classes)
+
+      const profilesRepository = getRepository(Profile)
+      const teachersRepository = getRepository(Teacher)
+      const mattersRepository = getRepository(Matter)
+      const profileDegreeRepository = getRepository(ProfileDegree)
+
+      const teacher = await teachersRepository.findOneOrFail(id)
+      const profile = await profilesRepository.findOneOrFail(id)
+      const matter = await mattersRepository.findOneOrFail(
+        newTeacher.profile.matter.id
+      )
+
+      const profileDegrees = await updateDegreesClassesEntities(
+        newTeacher.profile.degrees,
+        profileDegreeRepository
+      )
+
+      teacher.name = newTeacher.name
+      profile.matter = matter
+
+      await teachersRepository.save(teacher)
+      await profilesRepository.save(profile)
+
+      console.log(profile)
+
+      if (profileDegrees.length) {
+        profileDegrees.map(async (profileDegree: any) => {
+          const data = profileDegreeRepository.create({
+            profile,
+            degree: profileDegree.degree,
+            classes: profileDegree.classes,
+          })
+          await profileDegreeRepository.save(data)
+        })
+      }
+
+      return response
+        .status(400)
+        .json({ message: 'Professor atualizado com sucesso!' })
+    } catch (error) {
+      return response
+        .status(404)
+        .json({ message: 'Não foi possível editar o professor!' })
+    }
   },
 }
