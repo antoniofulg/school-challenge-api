@@ -57,21 +57,21 @@ const getTeachers = (filters: Array<Filter>) => {
   return query.getMany()
 }
 
-const updateDegreesClassesEntities = async (
-  profileDegreesItems: any,
-  profileDegreeRepository: any
-) => {
+const deleteOldDegreesClassesEntities = async (profile: Profile) => {
+  await getRepository(ProfileDegree)
+    .createQueryBuilder('profile_degree')
+    .delete()
+    .where('profileId = :id', { id: profile.id })
+    .execute()
+}
+
+const getDegreesClassesEntities = async (profileDegreesItems: any) => {
   const classRepository = getRepository(Class)
   const degreeRepository = getRepository(Degree)
 
   const profileDegrees = []
 
   for await (const profileDegreeItem of profileDegreesItems) {
-    let profileDegree = {}
-    profileDegree = await profileDegreeRepository.findOneOrFail(
-      profileDegreeItem.id
-    )
-
     const degree = await degreeRepository.findOneOrFail(
       profileDegreeItem.degree.id
     )
@@ -79,19 +79,11 @@ const updateDegreesClassesEntities = async (
     for await (const classItem of profileDegreeItem.classes) {
       classes.push(await classRepository.findOneOrFail(classItem.id))
     }
-    if (profileDegree.id === profileDegreeItem.id) {
-      profileDegree.degree = degree
-      profileDegree.classes = classes
-      profileDegreeRepository.save(profileDegree)
-    } else {
-      profileDegrees.push({
-        degree,
-        classes,
-      })
-    }
+    profileDegrees.push({
+      degree,
+      classes,
+    })
   }
-
-  console.log(profileDegrees)
 
   return profileDegrees
 }
@@ -160,10 +152,6 @@ export default {
       const { id } = request.params
       const newTeacher = request.body
 
-      console.log(newTeacher)
-      console.log(newTeacher.profile.degrees)
-      console.log(newTeacher.profile.degrees[0].classes)
-
       const profilesRepository = getRepository(Profile)
       const teachersRepository = getRepository(Teacher)
       const mattersRepository = getRepository(Matter)
@@ -175,9 +163,8 @@ export default {
         newTeacher.profile.matter.id
       )
 
-      const profileDegrees = await updateDegreesClassesEntities(
-        newTeacher.profile.degrees,
-        profileDegreeRepository
+      const profileDegrees = await getDegreesClassesEntities(
+        newTeacher.profile.degrees
       )
 
       teacher.name = newTeacher.name
@@ -186,21 +173,19 @@ export default {
       await teachersRepository.save(teacher)
       await profilesRepository.save(profile)
 
-      console.log(profile)
+      await deleteOldDegreesClassesEntities(profile)
 
-      if (profileDegrees.length) {
-        profileDegrees.map(async (profileDegree: any) => {
-          const data = profileDegreeRepository.create({
-            profile,
-            degree: profileDegree.degree,
-            classes: profileDegree.classes,
-          })
-          await profileDegreeRepository.save(data)
+      profileDegrees.map(async (profileDegree: any) => {
+        const data = profileDegreeRepository.create({
+          profile,
+          degree: profileDegree.degree,
+          classes: profileDegree.classes,
         })
-      }
+        await profileDegreeRepository.save(data)
+      })
 
       return response
-        .status(400)
+        .status(200)
         .json({ message: 'Professor atualizado com sucesso!' })
     } catch (error) {
       return response
